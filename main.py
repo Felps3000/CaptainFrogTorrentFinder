@@ -1,6 +1,4 @@
 from tkinter import *
-import tkinter
-from tkinter import Canvas
 from torrent_search import *
 from PIL import ImageTk, Image
 
@@ -12,11 +10,8 @@ def clicked():
     handlers= listar_torrents(inp)
     listbox.delete(0, END)
     for i in range (len(handlers)):
-        #titulo_buscar = Label(window, text=lista_handlers[i][0])
-        #titulo_buscar.grid(column=1, row=i)
         listbox.insert(END, str(handlers[i][2]) + " | " + str(handlers[i][0]))
         listbox.focus_set()
-    # return 'break'
    
 def listbox_clicked(event):
     cs = listbox.curselection()
@@ -30,13 +25,9 @@ x_offset_adjust = 23
 window = Tk()
 window.resizable(0,0)
 window.title("Captain Frog's Torrent Finder")
-window.geometry('782x600')
+window.geometry('782x630')
 window.configure(bg='#264653')
-# window.overrideredirect(True)
-
 bgcolor = "#264653"
-
-# window.bind('<Return>', clicked)
 
 # Define o termo de busca
 titulo_buscar = Label(window, text="insert search term",
@@ -59,7 +50,6 @@ inputtxt = Entry(window,
 inputtxt.place(x=16, y=160 , in_=window)
 inputtxt.bind('<Return>', lambda event:clicked())
 inputtxt.focus_set()
-# inputtxt.pack(pady = 162, padx = 2,expand = 0, fill = BOTH)
 
 # Define o botão
 btn = Button(window, text="search",
@@ -67,7 +57,7 @@ btn = Button(window, text="search",
             fg='#E9C46A',
             bd=0,
             width=10,
-            font=('Bebas Neue', 13, ),
+            font=('Bebas Neue', 13),
             command=clicked)
 btn.place(x=647 + x_offset_adjust, y=30 + global_offset, in_=window)
 
