@@ -39,6 +39,8 @@ window.geometry('782x630')
 window.configure(bg='#264653')
 bgcolor = "#264653"
 
+# TODO: adicionar barra de progresso enquanto o programa busca os resultados
+
 # Define o termo de busca
 titulo_buscar = Label(window, text="insert search term",
                       bg=bgcolor,
