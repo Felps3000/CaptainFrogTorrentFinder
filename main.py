@@ -6,7 +6,7 @@ from concurrent import futures
 handlers = []
 
 # daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/4
-def thread_clicked(): #Avoid Tkinter freeze
+def thread_clicked(): #  Avoid Tkinter freeze
     thread_pool_executor = futures.ThreadPoolExecutor(max_workers=1)
     thread_pool_executor.submit(clicked)
 
@@ -20,10 +20,10 @@ def clicked():
         listbox.focus_set()
 
 # scrollbar pra listbox daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/8
-    if (listbox.size()>22):
+    if (listbox.size()>20):
             scrollbar.place(x=749, y=191, height=320)
 
-def listbox_clicked():
+def listbox_clicked(event):
     cs = listbox.curselection()
     for list in cs:
         os.startfile(handlers[list][1])
