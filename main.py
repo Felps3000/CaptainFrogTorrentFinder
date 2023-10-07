@@ -1,7 +1,9 @@
 from tkinter import *
 from torrent_search import *
 from PIL import ImageTk, Image
+from concurrent import futures
 
+from concurrent import futures
 handlers = []
 
 def clicked():
@@ -12,12 +14,8 @@ def clicked():
     for i in range(len(handlers)):
         listbox.insert(END, str(handlers[i][2]) + " | " + str(handlers[i][0]))
         listbox.focus_set()
-
-# scrollbar pra listbox daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/8
-    if (listbox.size()>22):
-            scrollbar.place(x=749, y=191, height=320)
-
-def listbox_clicked():
+   
+def listbox_clicked(event):
     cs = listbox.curselection()
     for list in cs:
         os.startfile(handlers[list][1])
@@ -52,17 +50,17 @@ inputtxt = Entry(window,
                  font=("Bebas Neue", 18)
                  )
 inputtxt.place(x=16, y=160, in_=window)
-inputtxt.bind('<Return>', lambda event: clicked())
+inputtxt.bind('<Return>', lambda event: thread_clicked())
 inputtxt.focus_set()
 
 # Define o botão
 btn = Button(window, text="search",
-             bg='#E76F51',
-             fg='#E9C46A',
-             bd=0,
-             width=10,
-             font=('Bebas Neue', 13),
-             command=clicked)
+            bg='#E76F51',
+            fg='#E9C46A',
+            bd=0,
+            width=10,
+            font=('Bebas Neue', 13),
+            command=clicked)
 btn.place(x=647 + x_offset_adjust, y=30 + global_offset, in_=window)
 
 # Define a listbox
