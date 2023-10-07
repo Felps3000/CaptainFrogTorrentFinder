@@ -1,8 +1,14 @@
 from tkinter import *
 from torrent_search import *
 from PIL import ImageTk, Image
+from concurrent import futures
 
 handlers = []
+
+# from here https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/4/commits
+def thread_clicked(): #Avoid Tkinter freeze
+    thread_pool_executor = futures.ThreadPoolExecutor(max_workers=1)
+    thread_pool_executor.submit(clicked)
 
 def clicked():
     inp = inputtxt.get()
@@ -52,7 +58,7 @@ inputtxt = Entry(window,
                  font=("Bebas Neue", 18)
                  )
 inputtxt.place(x=16, y=160, in_=window)
-inputtxt.bind('<Return>', lambda event: clicked())
+inputtxt.bind('<Return>', lambda event: thread_clicked())
 inputtxt.focus_set()
 
 # Define o botão
@@ -62,7 +68,7 @@ btn = Button(window, text="search",
              bd=0,
              width=10,
              font=('Bebas Neue', 13),
-             command=clicked)
+             command=thread_clicked)
 btn.place(x=647 + x_offset_adjust, y=30 + global_offset, in_=window)
 
 # Define a listbox
