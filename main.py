@@ -13,12 +13,14 @@ def clicked():
         listbox.insert(END, str(handlers[i][2]) + " | " + str(handlers[i][0]))
         listbox.focus_set()
 
+# scrollbar pra listbox daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/8
+    if (listbox.size()>22):
+            scrollbar.place(x=749, y=191, height=320)
 
 def listbox_clicked():
     cs = listbox.curselection()
     for list in cs:
         os.startfile(handlers[list][1])
-
 
 global_offset = 130
 x_offset_adjust = 23
@@ -77,6 +79,11 @@ listbox = Listbox(window,
 listbox.place(x=16, y=61 + global_offset, in_=window)
 listbox.bind('<Double-1>', listbox_clicked)
 listbox.bind('<Return>', listbox_clicked)
+
+# Define a scrollbar da listbox
+scrollbar = Scrollbar(window, orient='vertical')
+scrollbar.config(command=listbox.yview)
+listbox.config(yscrollcommand=scrollbar.set)
 
 # Define a imagem do sapo
 frame = Frame(window, width=20, height=10)
