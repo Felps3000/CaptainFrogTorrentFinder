@@ -1,16 +1,22 @@
 from tkinter import *
+from tkinter import ttk
 from torrent_search import *
 from PIL import ImageTk, Image
 from concurrent import futures
 
 handlers = []
 
+
 # daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/4
-def thread_clicked(): #  Avoid Tkinter freeze
+def thread_clicked():  # Avoid Tkinter freeze
     thread_pool_executor = futures.ThreadPoolExecutor(max_workers=1)
     thread_pool_executor.submit(clicked)
 
+
 def clicked():
+    progressbar.tkraise()
+    progressbar.place(x=16, y=155, width=652, height=10)
+    progressbar.start(15)
     inp = inputtxt.get()
     global handlers
     handlers = listar_torrents(inp)
@@ -18,10 +24,13 @@ def clicked():
     for i in range(len(handlers)):
         listbox.insert(END, str(handlers[i][2]) + " | " + str(handlers[i][0]))
         listbox.focus_set()
+    progressbar.stop()
+    progressbar.place_forget()
 
-# scrollbar pra listbox daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/8
-    if (listbox.size()>20):
-            scrollbar.place(x=749, y=191, height=320)
+    # scrollbar pra listbox daqui https://github.com/NatanaelAntonioli/CaptainFrogTorrentFinder/pull/8
+    if listbox.size() > 20:
+        scrollbar.place(x=749, y=191, height=320)
+
 
 def listbox_clicked(event):
     cs = listbox.curselection()
@@ -39,14 +48,26 @@ window.geometry('782x630')
 window.configure(bg='#264653')
 bgcolor = "#264653"
 
-# TODO: fazer barra de progresso da busca
+style = ttk.Style()
+# Set the theme to "clam"
+style.theme_use("clam")
+# Configure the Horizontal.TProgressbar style in "clam" theme
+style.configure("Horizontal.TProgressbar",
+                background="#2a9d8f",
+                troughcolor="#e9c46a",
+                bordercolor="#e9c46a",
+                lightcolor="#2a9d8f",
+                darkcolor="#2a9d8f")
+# Configure the Vertical.TProgressbar style in "clam" theme
+
+progressbar = ttk.Progressbar(window, length=200, orient="horizontal", mode="indeterminate")
 
 # Define o termo de busca
 titulo_buscar = Label(window, text="insert search term",
                       bg=bgcolor,
                       fg="white",
                       font=('Bebas Neue', 20))
-titulo_buscar.place(x=12, y=128, in_=window)
+titulo_buscar.place(x=12, y=123, in_=window)
 
 # Define o campo onde recebemos o input
 inputtxt = Entry(window,
@@ -70,6 +91,8 @@ btn = Button(window, text="search",
              bd=0,
              width=10,
              font=('Bebas Neue', 13),
+             activebackground="#E9C46A",
+             activeforeground="#2A9D8F",
              command=thread_clicked)
 btn.place(x=647 + x_offset_adjust, y=30 + global_offset, in_=window)
 
@@ -82,7 +105,11 @@ listbox = Listbox(window,
                   borderwidth=0,
                   highlightthickness=0,
                   bd=0,
-                  highlightcolor="#E9C46A",
+                  highlightcolor="#2A9D8F",
+                  highlightbackground ="#E9C46A",
+                  selectforeground= "#2A9D8F",
+                  selectbackground = "#E9C46A",
+                  activestyle = "none"
                   )
 listbox.place(x=16, y=61 + global_offset, in_=window)
 listbox.bind('<Double-1>', listbox_clicked)
@@ -97,10 +124,8 @@ listbox.config(yscrollcommand=scrollbar.set)
 frame = Frame(window, width=20, height=10)
 frame.pack()
 frame.place(x=10 + x_offset_adjust, y=45)
-
 img = ImageTk.PhotoImage(Image.open("sapo.png"))
-image = Label(frame, image=img, bg=bgcolor
-              )
+image = Label(frame, image=img, bg=bgcolor)
 image.pack()
 
 # Define o título
