@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter as tk
 from tkinter import ttk
 from torrent_search import *
 from PIL import ImageTk, Image
@@ -24,6 +25,7 @@ def clicked():
     for i in range(len(handlers)):
         listbox.insert(END, str(handlers[i][2]) + " | " + str(handlers[i][0]))
         listbox.focus_set()
+        listbox.select_set(0)
     progressbar.stop()
     progressbar.place_forget()
 
@@ -37,6 +39,7 @@ def listbox_clicked(event):
     for list in cs:
         os.startfile(handlers[list][1])
 
+
 global_offset = 130
 x_offset_adjust = 23
 
@@ -44,7 +47,7 @@ x_offset_adjust = 23
 window = Tk()
 window.resizable(0, 0)
 window.title("Captain Frog's Torrent Finder")
-window.geometry('782x630')
+window.geometry('782x600')
 window.configure(bg='#264653')
 bgcolor = "#264653"
 
@@ -84,6 +87,81 @@ inputtxt.place(x=16, y=160, in_=window)
 inputtxt.bind('<Return>', lambda event: thread_clicked())
 inputtxt.focus_set()
 
+
+def popup(event):
+    try:
+        inp = inputtxt.get()  # Get the text inside entry widget
+        ls = listbox.get(0)
+        if not inp:
+            menu.entryconfig("Copy", state="disabled")
+            menu.entryconfig("Cut", state="disabled")
+            menu.entryconfig("Clear", state="disabled")
+            if not ls:
+                menu.entryconfig("Clear list", state="disabled")
+            else:
+                menu.entryconfig("Clear list", state="active")
+            menu.tk_popup(event.x_root, event.y_root)  # Pop the menu up in the given coordinates
+        else:
+            menu.entryconfig("Copy", state="active")
+            menu.entryconfig("Cut", state="active")
+            menu.entryconfig("Clear", state="active")
+            if not ls:
+                menu.entryconfig("Clear list", state="disabled")
+            else:
+                menu.entryconfig("Clear list", state="active")
+            menu.tk_popup(event.x_root, event.y_root)  # Pop the menu up in the given coordinates
+    finally:
+        menu.grab_release()  # Release it once an option is selected
+
+
+def paste():
+    clipboard = window.clipboard_get()  # Get the copied item from system clipboard
+    inputtxt.insert('end', clipboard)  # Insert the item into the entry widget
+
+
+def copy():
+    inp = inputtxt.get()  # Get the text inside entry widget
+    if not inp:
+        return None
+    else:
+        window.clipboard_clear()  # Clear the tkinter clipboard
+        window.clipboard_append(inp)  # Append to system clipboard
+
+
+def cut():
+    inp = inputtxt.get()  # Get the text inside entry widget
+    if not inp:
+        return None
+    else:
+        window.clipboard_clear()  # Clear the tkinter clipboard
+        window.clipboard_append(inp)  # Append to system clipboard
+        inputtxt.delete(0, END)
+
+
+def clear():
+    inputtxt.delete(0, END)
+
+
+def clearls():
+    listbox.delete(0, END)
+    scrollbar.place_forget()
+
+
+menu = Menu(window,
+            tearoff=0,
+            activebackground="#264653",
+            activeforeground="#e9c46a",
+            )  # Create a menu
+menu.add_command(label='Copy', command=copy)  # Create labels and commands
+menu.add_command(label='Paste', command=paste)
+menu.add_command(label='Cut', command=cut)
+menu.add_separator()
+menu.add_command(label='Clear', command=clear)
+menu.add_separator()
+menu.add_command(label='Clear list', command=clearls)
+
+inputtxt.bind('<Button-3>', popup)  # Bind a func to right click
+
 # Define o botão
 btn = Button(window, text="search",
              bg='#E76F51',
@@ -96,22 +174,30 @@ btn = Button(window, text="search",
              command=thread_clicked)
 btn.place(x=647 + x_offset_adjust, y=30 + global_offset, in_=window)
 
+canvas_1 = tk.Canvas(window,
+                     width=750,
+                     height=320,
+                     bg="#2a9d8f",
+                     highlightthickness=0,
+                     relief=FLAT)
+canvas_1.place(x=16, y=191)
+
 # Define a listbox
 listbox = Listbox(window,
                   height=20,
-                  width=125,
+                  width=124,
                   bg="#2A9D8F",
                   fg="white",
                   borderwidth=0,
                   highlightthickness=0,
                   bd=0,
                   highlightcolor="#2A9D8F",
-                  highlightbackground ="#E9C46A",
-                  selectforeground= "#2A9D8F",
-                  selectbackground = "#E9C46A",
-                  activestyle = "none"
+                  highlightbackground="#E9C46A",
+                  selectforeground="#2A9D8F",
+                  selectbackground="#E9C46A",
+                  activestyle="none"
                   )
-listbox.place(x=16, y=61 + global_offset, in_=window)
+listbox.place(x=20, y=61 + global_offset, in_=window)
 listbox.bind('<Double-1>', listbox_clicked)
 listbox.bind('<Return>', listbox_clicked)
 
@@ -138,17 +224,14 @@ titulo_sapo.config(font=("Bebas Neue", 30))
 xx = 16
 yy = 515
 
-subtitulo_1 = Label(window, text="Please wait a few seconds to see results.", fg="white", bg=bgcolor)
-subtitulo_1.place(x=xx, y=yy, in_=window)
-
 subtitulo_2 = Label(window, text="M - Main results, probably in good health.", fg="white", bg=bgcolor)
-subtitulo_2.place(x=xx, y=yy + 20, in_=window)
+subtitulo_2.place(x=xx, y=yy, in_=window)
 
 subtitulo_3 = Label(window, text="S - Secondary results, could be in good health but probably aren't.", fg="white",
                     bg=bgcolor)
-subtitulo_3.place(x=xx, y=yy + 40, in_=window)
+subtitulo_3.place(x=xx, y=yy + 20, in_=window)
 
 subtitulo_4 = Label(window, text="G - Google search results, useful for niche contents.", fg="white", bg=bgcolor)
-subtitulo_4.place(x=xx, y=yy + 60, in_=window)
+subtitulo_4.place(x=xx, y=yy + 40, in_=window)
 
 window.mainloop()
