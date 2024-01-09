@@ -89,6 +89,13 @@ inputtxt.focus_set()
 
 
 def popup(event):
+
+    try:
+        clipboard = window.clipboard_get()  # Get the copied item from system clipboard
+        menu.entryconfig("Paste", state="active")
+    except tk.TclError:
+        menu.entryconfig("Paste", state="disabled")
+
     try:
         inp = inputtxt.get()  # Get the text inside entry widget
         ls = listbox.get(0)
@@ -117,7 +124,7 @@ def popup(event):
 def paste():
     clipboard = window.clipboard_get()  # Get the copied item from system clipboard
     inputtxt.insert('end', clipboard)  # Insert the item into the entry widget
-
+ 
 
 def copy():
     inp = inputtxt.get()  # Get the text inside entry widget
