@@ -47,7 +47,7 @@ x_offset_adjust = 23
 window = Tk()
 window.resizable(0, 0)
 window.title("Captain Frog's Torrent Finder")
-window.geometry('782x600')
+window.geometry('782x580')
 window.configure(bg='#264653')
 bgcolor = "#264653"
 
@@ -79,6 +79,8 @@ inputtxt = Entry(window,
                  fg="#2A9D8F",
                  bd=0,
                  insertbackground="#2A9D8F",
+                 selectbackground="#2a9d8f",
+                 selectforeground="#e9c46a",
                  borderwidth=0,
                  highlightthickness=0,
                  font=("Bebas Neue", 18)
@@ -91,7 +93,7 @@ inputtxt.focus_set()
 def popup(event):
 
     try:
-        clipboard = window.clipboard_get()  # Get the copied item from system clipboard
+        window.clipboard_get()  # Get the copied item from system clipboard
         menu.entryconfig("Paste", state="active")
     except tk.TclError:
         menu.entryconfig("Paste", state="disabled")
@@ -234,11 +236,7 @@ yy = 515
 subtitulo_2 = Label(window, text="M - Main results, probably in good health.", fg="white", bg=bgcolor)
 subtitulo_2.place(x=xx, y=yy, in_=window)
 
-subtitulo_3 = Label(window, text="S - Secondary results, could be in good health but probably aren't.", fg="white",
-                    bg=bgcolor)
+subtitulo_3 = Label(window, text="S - Secondary results, could be in good health but probably aren't.", fg="white",bg=bgcolor)
 subtitulo_3.place(x=xx, y=yy + 20, in_=window)
-
-subtitulo_4 = Label(window, text="G - Google search results, useful for niche contents.", fg="white", bg=bgcolor)
-subtitulo_4.place(x=xx, y=yy + 40, in_=window)
 
 window.mainloop()

@@ -1,23 +1,20 @@
 from urllib.request import Request, urlopen
 import re
-from googlesearch import search
 import time
 import os
 
 # Configurações iniciais
 
-provedores = []
-
-provedores.append(["sld", "https://solidtorrents.to/search?q=REPLACEMAIS"])
-provedores.append(["tpb", "https://tpb.party/search/REPLACEPORCENTAGEM/1/99/0"])
-provedores.append(["tgy", "https://torrentgalaxy.to/torrents.php?search=REPLACEMAIS#results"])
+provedores = [["sld", "https://solidtorrents.to/search?q=REPLACEMAIS"],
+              ["tpb", "https://tpb.party/search/REPLACEPORCENTAGEM/1/99/0"],
+              ["tgy", "https://torrentgalaxy.to/torrents.php?search=REPLACEMAIS#results"]]
 
 lista_provedores = ["sld", "tpb", "tgy"]
-#lista_provedores = ["tpb"]
 
-#Verifica se um link magnet é válido
+
+# Verifica se um link magnet é válido
 def verify_magnet_link(magnet_link):
-    pattern=re.compile(r"magnet:\?xt=urn:[a-z0-9]+:[a-zA-Z0-9]{32}")
+    pattern = re.compile(r"magnet:\?xt=urn:[a-z0-9]+:[a-zA-Z0-9]{32}")
     result = pattern.match(magnet_link)
     return result
 
@@ -45,7 +42,6 @@ def get_link(provedor, termo):
 def get_list_of_torrents(provedores, termo):
     lista_magnets_main = []
     lista_magnets_second = []
-    lista_magnets_google = []
 
     for prov in provedores:
         try:
@@ -74,34 +70,9 @@ def get_list_of_torrents(provedores, termo):
                         lista_magnets_second.append([i, i, "S"])
         except:
             print("Erro no provedor " + prov)
+    return lista_magnets_main + lista_magnets_second
 
-    query = termo + '"magnet"'
-    
-    try:
-        for j in search(query):
-            try:
-                req = Request(j, headers={'User-Agent': 'Sapo'})
-                webpage = urlopen(req).read()
 
-                texto_pagina = webpage.decode('ISO-8859-1')
-
-                lista_split = texto_pagina.split('"')[1:-1]
-
-                for i in (lista_split):
-                    if "magnet:?" in i:
-                        pure = i
-                        i = i.replace("&#", "=")
-                        i = i.replace("x3D;", "")
-                        i = i.replace("amp;", "")
-
-                        if i not in lista_magnets_main and i not in lista_magnets_second and verify_magnet_link(i):
-                            lista_magnets_google.append([i, i, "G"])
-            except:
-                print("Erro na página " + j)
-        return lista_magnets_main + lista_magnets_second + lista_magnets_google
-    except:
-        print("Erro! Nao foi possivel recuperar busca do Google.")
-        return lista_magnets_main + lista_magnets_second
 # Recebe uma tupla [magnet, magnet, rating] e devolve uma tupla [nome, magnet, rating]
 # É uma função de enbelezamento, removendo deixando o nome da tupla amigável
 def get_torrent_metadata(lista_magnets):
@@ -126,13 +97,14 @@ def get_torrent_metadata(lista_magnets):
 
     return lista_metadata
 
+
 # Obtém o tamanho da linha para desenhar
 def get_size_linha(handlers):
     a = 0
     for i in handlers:
         if a < len(i[0]):
             a = len(i[0])
-    return a + 15 # uma aposta generosa de caracteres não contados pelo len() por alguma razão
+    return a + 15  # uma aposta generosa de caracteres não contados pelo len() por alguma razão
 
 
 # Imprime uma linha de pontos do tamanho necessário
@@ -152,28 +124,8 @@ def print_linha_nome(nome, num, size_linha):
         nome = nome + " "
     print("| " + str(num) + " | " + nome + " |")
 
+
 def listar_torrents(buscar):
     torrents = get_list_of_torrents(lista_provedores, buscar)
     handlers = get_torrent_metadata(torrents)
-
-    counter = 0
-
-    size_linha = get_size_linha(handlers)
-
     return handlers
-
-
-    #print_linha(size_linha)
-    #for i in range(len(handlers)):
-        #current_torrent = handlers[i]
-
-        #current_nome = current_torrent[0]
-        #current_magnet = current_torrent[1]
-        #current_grade = current_torrent[2]
-
-        #print_linha_nome(current_nome, i, size_linha)
-        #print_linha(size_linha)
-
-    #entrada = int(input("Qual valor deseja buscar? "))
-    #magnet_ok = handlers[entrada][1]
-    #os.startfile(magnet_ok)
